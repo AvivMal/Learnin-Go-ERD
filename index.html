@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learnin-Go · ERD</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090f; --s1:rgba(255,255,255,0.04); --s2:rgba(255,255,255,0.07); --s3:rgba(255,255,255,0.13);
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.18);
+  --text:#dde2f0; --dim:rgba(221,226,240,0.5); --muted:rgba(221,226,240,0.3);
+  --accent:#4f7ef8; --accent-g:rgba(79,126,248,0.2); --purple:#9b6ff7;
+  --green:#3ecf8e; --yellow:#f5c842; --sw:300px; --hh:58px;
+}
+html,body{height:100%;overflow:hidden;font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text)}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E")}
+.g1,.g2,.g3{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0}
+.g1{top:-20%;right:-10%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(79,126,248,.10) 0%,transparent 70%)}
+.g2{bottom:-15%;left:-10%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(155,111,247,.08) 0%,transparent 70%)}
+.g3{top:30%;left:20%;width:35vw;height:35vw;background:radial-gradient(circle,rgba(34,211,238,.05) 0%,transparent 70%)}
+#app{position:relative;z-index:1;display:grid;grid-template-rows:var(--hh) 1fr;grid-template-columns:var(--sw) 1fr;height:100vh}
+header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  border-bottom:1px solid var(--border);background:rgba(7,9,15,.9);backdrop-filter:blur(20px)}
+.brand{display:flex;align-items:center;gap:11px}
+.brand-ico{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center}
+.brand-name{font-size:.93rem;font-weight:800;letter-spacing:-.02em;background:linear-gradient(90deg,var(--text),var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.brand-tag{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.hpills{display:flex;gap:6px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--border);padding:3px 9px;border-radius:20px;font-size:.67rem;color:var(--dim)}
+.pdot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+aside{border-left:1px solid var(--border);background:rgba(7,9,15,.72);backdrop-filter:blur(20px);display:flex;flex-direction:column;overflow:hidden}
+.s-top{padding:14px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.s-lbl{font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.sw{position:relative}
+.sw svg{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+#si{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:7px 32px 7px 10px;font-family:'Heebo',sans-serif;font-size:.78rem;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl}
+#si::placeholder{color:var(--muted)}
+#si:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-g)}
+#el-wrap{flex:1;overflow-y:auto;padding:6px}
+#el-wrap::-webkit-scrollbar{width:3px}
+#el-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.egroup{margin-bottom:2px}
+.egroup-lbl{font-size:.57rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 8px 3px}
+.ebtn{width:100%;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--dim);font-family:'Heebo',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;text-align:right;transition:all .12s;direction:rtl}
+.ebtn:hover{background:var(--s2);border-color:var(--border);color:var(--text)}
+.ebtn.active{background:var(--accent-g);border-color:rgba(79,126,248,.35);color:#b0c6ff}
+.edot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ecnt{margin-right:auto;font-size:.58rem;color:var(--muted);background:var(--s1);border:1px solid var(--border);padding:1px 5px;border-radius:8px;font-family:'IBM Plex Mono',monospace}
+.no-res{padding:20px;text-align:center;color:var(--muted);font-size:.75rem}
+.hidden{display:none!important}
+#main{display:flex;flex-direction:column;overflow:hidden;position:relative}
+#toolbar{position:absolute;top:14px;left:14px;z-index:20;display:flex;gap:3px;background:rgba(7,9,15,.92);backdrop-filter:blur(14px);border:1px solid var(--border2);border-radius:8px;padding:3px}
+.tbtn{background:transparent;border:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;color:var(--dim);cursor:pointer;transition:all .12s}
+.tbtn:hover{background:var(--s3);color:var(--text)}
+.tsep{width:1px;background:var(--border);margin:4px 1px}
+#zlbl{position:absolute;top:14px;left:136px;z-index:20;background:rgba(7,9,15,.92);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.67rem;font-family:'IBM Plex Mono',monospace;color:var(--dim);min-width:52px;text-align:center}
+#erd-wrap{flex:1;overflow:hidden;position:relative;cursor:grab}
+#erd-wrap.dragging{cursor:grabbing}
+#erd-svg{width:100%;height:100%;display:block;shape-rendering:geometricPrecision;text-rendering:optimizeLegibility}
+/* SVG table styles */
+.tbl-header{cursor:pointer;transition:filter .15s}
+.tbl-header:hover{filter:brightness(1.2)}
+.tbl-row{transition:fill .1s}
+.tbl-row:hover{fill:rgba(255,255,255,0.08)!important}
+.entity-group-hover{cursor:pointer}
+#panel{height:0;overflow:hidden;border-top:1px solid transparent;background:rgba(7,9,15,.96);backdrop-filter:blur(20px);transition:height .36s cubic-bezier(.4,0,.2,1),border-color .36s;flex-shrink:0}
+#panel.open{height:320px;border-color:var(--border)}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:1px solid var(--border);min-height:46px}
+.ph-name{display:flex;align-items:center;gap:9px}
+.ph-ico{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center}
+.ph-title{font-size:.88rem;font-weight:700}
+.ph-desc{font-size:.68rem;color:var(--muted);margin-top:1px}
+.cbtn{background:var(--s2);border:1px solid var(--border);width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--dim);cursor:pointer;transition:all .12s}
+.cbtn:hover{background:var(--s3);color:var(--text)}
+.pbody{display:grid;grid-template-columns:1fr 1fr;height:calc(100% - 46px);overflow:hidden}
+.psec{padding:11px 16px;overflow-y:auto}
+.psec:first-child{border-left:1px solid var(--border)}
+.psec::-webkit-scrollbar{width:3px}
+.psec::-webkit-scrollbar-thumb{background:var(--border2)}
+.sec-lbl{font-size:.57rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.flist{display:flex;flex-direction:column;gap:2px}
+.frow{display:flex;align-items:center;gap:7px;padding:4px 7px;border-radius:4px;background:var(--s1);border:1px solid transparent;transition:all .1s}
+.frow:hover{background:var(--s2);border-color:var(--border)}
+.fname{font-family:'IBM Plex Mono',monospace;font-size:.69rem;color:var(--text);flex:1}
+.ftype{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--accent);background:rgba(79,126,248,.1);border:1px solid rgba(79,126,248,.15);padding:1px 5px;border-radius:3px}
+.pk-b{font-size:.54rem;font-weight:800;color:var(--yellow);background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.2);padding:1px 4px;border-radius:3px}
+.fk-b{font-size:.54rem;font-weight:700;color:var(--purple);background:rgba(155,111,247,.1);border:1px solid rgba(155,111,247,.2);padding:1px 4px;border-radius:3px}
+.rlist{display:flex;flex-direction:column;gap:3px}
+.rtag{display:flex;align-items:center;gap:6px;padding:5px 9px;border-radius:5px;background:var(--s1);border:1px solid var(--border);font-size:.71rem;color:var(--dim);transition:all .1s}
+.rtag:hover{background:var(--s2);color:var(--text)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .2s ease forwards}
+</style>
+</head>
+<body>
+<div class="g1"></div><div class="g2"></div><div class="g3"></div>
+<div id="app">
+<header>
+  <div class="brand">
+    <div class="brand-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+    <div><div class="brand-name">Learnin-Go</div><div class="brand-tag">ארכיטקטורת נתונים · ERD</div></div>
+  </div>
+  <div class="hpills">
+    <div class="pill"><div class="pdot"></div>SVG ERD</div>
+    <div class="pill">26 טבלאות</div>
+    <div class="pill">35 קשרים</div>
+  </div>
+</header>
+<aside>
+  <div class="s-top">
+    <div class="s-lbl"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>ישויות</div>
+    <div class="sw"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="si" placeholder="חיפוש טבלה..." autocomplete="off"></div>
+  </div>
+  <div id="el-wrap"><div id="el"></div><div id="nores" class="no-res hidden">לא נמצאו תוצאות</div></div>
+</aside>
+<div id="main">
+  <div id="toolbar">
+    <button class="tbtn" onclick="zi()" title="+"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><path d="m21 21-4.35-4.35"/></svg></button>
+    <button class="tbtn" onclick="zo()" title="-"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="8" y1="11" x2="14" y2="11"/><path d="m21 21-4.35-4.35"/></svg></button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="fitView()" title="F"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="resetView()" title="0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+  </div>
+  <div id="zlbl">100%</div>
+  <div id="erd-wrap" style="direction:ltr"><svg id="erd-svg" xmlns="http://www.w3.org/2000/svg" style="direction:ltr;unicode-bidi:isolate" direction="ltr"></svg></div>
+  <div id="panel">
+    <div class="ph"><div class="ph-name" id="ph-name"></div><button class="cbtn" onclick="closePanel()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="pbody" id="pbody"></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════
+const GROUPS = [
+  { key:'users',    label:'👤 משתמשים',     color:'#4f7ef8', dark:'#1a2a5e',
+    tables:['profiles','user_preferences','user_hobbies','hobbies'] },
+  { key:'courses',  label:'📚 קורסים',      color:'#3ecf8e', dark:'#0f3325',
+    tables:['courses','course_sources','course_knowledge_chunk','course_units','course_sub_units'] },
+  { key:'learning', label:'🧠 חומרי למידה', color:'#9b6ff7', dark:'#2a1a50',
+    tables:['sub_unit_summaries','sub_unit_flashcards','sub_unit_quizzes','unit_exams','final_exams'] },
+  { key:'plan',     label:'📅 תכנון',       color:'#f5c842', dark:'#3a2e0a',
+    tables:['study_plans','study_plan_items'] },
+  { key:'progress', label:'📊 התקדמות',     color:'#fb923c', dark:'#3a1f0a',
+    tables:['user_course_progress','user_unit_progress','user_subunit_progress'] },
+  { key:'chat',     label:'💬 צ׳אט ומשוב',  color:'#f472b6', dark:'#3a0f25',
+    tables:['chat_threads','chat_messages','user_feedback','learning_interactions','error_reports'] }
+];
+
+const SCHEMA = {
+  profiles:              { he:'פרופילי משתמשים',    desc:'טבלת הבסיס לכל משתמש — גישה, פרטים וסטטוס.',              fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'display_name',t:'text'},{n:'email',t:'text'},{n:'membership_type',t:'text'},{n:'user_status',t:'text'},{n:'is_onboarded',t:'boolean'},{n:'created_at',t:'timestamp'}],              rels:['1:1 — user_preferences','1:N — courses','1:N — progress, chats, feedback'] },
+  user_preferences:      { he:'העדפות למידה',        desc:'שעות, תדר, סוגי תוכן ונחיות AI.',                         fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'study_days',t:'text[]'},{n:'daily_duration',t:'text'},{n:'preferred_time',t:'text'},{n:'content_types',t:'text[]'},{n:'ai_instructions',t:'text'},{n:'theme_mode',t:'text'},{n:'language_code',t:'text'}], rels:['1:1 — profiles'] },
+  hobbies:               { he:'תחביבים',             desc:'רשימת תחביבים מובנים ומותאמים.',                           fields:[{n:'id',t:'uuid',pk:true},{n:'name_he',t:'text'},{n:'slug',t:'text'},{n:'is_custom',t:'boolean'}],                                                                                                                                                                         rels:['1:N — user_hobbies'] },
+  user_hobbies:          { he:'תחביבי משתמש',        desc:'טבלת גישור M:N בין משתמשים לתחביבים.',                     fields:[{n:'user_id',t:'uuid',pk:true},{n:'hobby_id',t:'uuid',pk:true}],                                                                                                                                                                                                          rels:['N:1 — profiles','N:1 — hobbies'] },
+  courses:               { he:'קורסים',              desc:'Root — קורס שלם עם מטרה, רמה ותאריך מבחן.',               fields:[{n:'id',t:'uuid',pk:true},{n:'created_by_user_id',t:'uuid',fk:true},{n:'title',t:'text'},{n:'description',t:'text'},{n:'status',t:'text'},{n:'course_difficulty',t:'text'},{n:'course_goal',t:'text'},{n:'exam_date',t:'date'},{n:'knowledge_pack_json',t:'jsonb'},{n:'created_at',t:'timestamp'},{n:'updated_at',t:'timestamp'}], rels:['N:1 — profiles','1:N — units, sources, exams','1:1 — study_plans'] },
+  course_sources:        { he:'מקורות קורס',         desc:'קבצים שהועלו לקורס לעיבוד AI.',                           fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'file_name',t:'text'},{n:'file_type',t:'text'},{n:'status',t:'text'},{n:'file_url',t:'text'},{n:'uploaded_by_user_id',t:'uuid',fk:true}],                                                                      rels:['N:1 — courses','1:N — knowledge_chunk'] },
+  course_knowledge_chunk:{ he:'מקטעי ידע',           desc:'Chunks + embeddings וקטוריים לחיפוש סמנטי.',              fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'source_id',t:'uuid',fk:true},{n:'chunk_index',t:'int'},{n:'chunk_text',t:'text'},{n:'embedding',t:'vector'}],                                                                                                  rels:['N:1 — courses','N:1 — course_sources'] },
+  course_units:          { he:'יחידות קורס',         desc:'פרקים ראשיים בתוך הקורס.',                                 fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'unit_index',t:'int'},{n:'unit_title',t:'text'},{n:'unit_description',t:'text'}],                                                                                                                               rels:['N:1 — courses','1:N — course_sub_units','1:N — unit_exams'] },
+  course_sub_units:      { he:'תתי-יחידות',          desc:'נושאים ממוקדים — בסיס לסיכומים, כרטיסיות ובחנים.',        fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'unit_id',t:'uuid',fk:true},{n:'sub_unit_index',t:'text'},{n:'sub_unit_title',t:'text'}],                                                                                                                      rels:['N:1 — courses','N:1 — course_units','1:N — summaries, flashcards, quizzes'] },
+  sub_unit_summaries:    { he:'סיכומים',             desc:'סיכום JSON שנוצר ע"י AI לכל תת-יחידה.',                    fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'sub_unit_id',t:'uuid',fk:true},{n:'summary_json',t:'jsonb'},{n:'status',t:'text'}],                                                                                                                           rels:['N:1 — courses','N:1 — course_sub_units'] },
+  sub_unit_flashcards:   { he:'כרטיסיות',            desc:'Flashcards לחזרה חכמה.',                                   fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'sub_unit_id',t:'uuid',fk:true},{n:'cards',t:'jsonb'},{n:'status',t:'text'}],                                                                                                                                  rels:['N:1 — course_sub_units'] },
+  sub_unit_quizzes:      { he:'בחנים',               desc:'שאלות אמריקאיות לתת-יחידה.',                               fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'sub_unit_id',t:'uuid',fk:true},{n:'questions',t:'jsonb'},{n:'status',t:'text'}],                                                                                                                              rels:['N:1 — course_sub_units'] },
+  unit_exams:            { he:'מבחני יחידה',         desc:'מבחן מסכם בסיום יחידת לימוד.',                             fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'unit_id',t:'uuid',fk:true},{n:'questions',t:'jsonb'},{n:'status',t:'text'}],                                                                                                                                  rels:['N:1 — courses','N:1 — course_units'] },
+  final_exams:           { he:'מבחן גמר',            desc:'מבחן סופי — ציון ומעבר/כישלון.',                           fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'user_id',t:'uuid',fk:true},{n:'questions',t:'jsonb'},{n:'score',t:'int'},{n:'passed',t:'boolean'},{n:'status',t:'text'}],                                                                                     rels:['N:1 — courses','N:1 — profiles'] },
+  study_plans:           { he:'תוכניות לימוד',       desc:'מעטפת הזמנים המתוכננת לקורס.',                              fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'schedule_json',t:'jsonb'}],                                                                                                                                                                                  rels:['1:1 — courses','1:N — study_plan_items'] },
+  study_plan_items:      { he:'פריטי לוז',           desc:'חריצי זמן לחומר בתאריך ושעה ספציפיים.',                    fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'sub_unit_index',t:'text'},{n:'title',t:'text'},{n:'scheduled_date',t:'text'},{n:'time_slot',t:'text'},{n:'allocated_minutes',t:'int'},{n:'status',t:'text'}],                                                  rels:['N:1 — courses'] },
+  user_course_progress:  { he:'התקדמות בקורס',       desc:'מיקום נוכחי + זמן צפייה אחרון.',                           fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'course_id',t:'uuid',fk:true},{n:'last_unit_id',t:'uuid'},{n:'last_sub_unit_id',t:'uuid'},{n:'last_seen_at',t:'timestamp'}],                                                                                      rels:['N:1 — courses','N:1 — profiles'] },
+  user_unit_progress:    { he:'התקדמות יחידה',       desc:'ציון מבחן יחידה וסטטוס השלמה.',                            fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'course_id',t:'uuid',fk:true},{n:'unit_id',t:'uuid',fk:true},{n:'exam_score',t:'int'},{n:'state',t:'text'}],                                                                                                    rels:['N:1 — courses','N:1 — course_units'] },
+  user_subunit_progress: { he:'התקדמות תת-יחידה',   desc:'בוחן הושלם, ציון, מצב.',                                   fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'course_id',t:'uuid',fk:true},{n:'sub_unit_id',t:'uuid',fk:true},{n:'quiz_completed',t:'boolean'},{n:'quiz_score',t:'int'},{n:'state',t:'text'}],                                                                 rels:['N:1 — courses','N:1 — course_sub_units'] },
+  chat_threads:          { he:'שרשורי צ\'אט',        desc:'שרשורי שיחה בין לומד לסוכן AI.',                           fields:[{n:'id',t:'uuid',pk:true},{n:'course_id',t:'uuid',fk:true},{n:'user_id',t:'uuid',fk:true},{n:'title',t:'text'}],                                                                                                                                                             rels:['N:1 — courses','N:1 — profiles','1:N — chat_messages'] },
+  chat_messages:         { he:'הודעות',              desc:'הודעות בשרשור — role + content.',                          fields:[{n:'id',t:'uuid',pk:true},{n:'thread_id',t:'uuid',fk:true},{n:'role',t:'text'},{n:'content',t:'text'}],                                                                                                                                                                      rels:['N:1 — chat_threads'] },
+  user_feedback:         { he:'משובים',              desc:'משובים על קורס או תת-יחידה.',                              fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'course_id',t:'uuid',fk:true},{n:'sub_unit_id',t:'uuid'},{n:'feedback_type',t:'text'},{n:'feedback_value',t:'jsonb'}],                                                                                           rels:['N:1 — profiles','N:1 — courses'] },
+  learning_interactions: { he:'אינטראקציות',         desc:'תיעוד פעולות לומד לאנליטיקה.',                             fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'course_id',t:'uuid',fk:true},{n:'interaction_type',t:'text'},{n:'content_type',t:'text'}],                                                                                                                      rels:['N:1 — profiles','N:1 — courses'] },
+  error_reports:         { he:'דיווחי שגיאות',       desc:'בעיות שדווחו ע"י משתמשים.',                                fields:[{n:'id',t:'uuid',pk:true},{n:'user_id',t:'uuid',fk:true},{n:'course_id',t:'uuid',fk:true},{n:'issue_category',t:'text'},{n:'title',t:'text'},{n:'description',t:'text'},{n:'status',t:'text'}],                                                                              rels:['N:1 — profiles','N:1 — courses'] }
+};
+
+// ══════════════════════════════════════════════════════════════════
+// LAYOUT — hierarchical columns (mind-map style)
+// ══════════════════════════════════════════════════════════════════
+const ROW_H  = 24;   // field row height
+const HDR_H  = 34;   // header height
+const PAD    = 44;   // vertical padding between tables in same column
+const COL_GAP= 90;   // horizontal gap between columns
+const BADGE_W= 28;   // width reserved for PK/FK badge
+const NAME_PAD = 10; // padding after badge before field name
+const TYPE_PAD = 12; // right padding before type string ends
+const HDR_SIDE = 16; // left padding inside header for table name
+
+// ── Measure text width using an off-screen canvas ──
+const _mCanvas = document.createElement('canvas');
+const _mCtx    = _mCanvas.getContext('2d');
+function measureMono(str, fontSize=10.5){
+  _mCtx.font = `${fontSize}px "IBM Plex Mono", "Courier New", monospace`;
+  return _mCtx.measureText(str).width;
+}
+function measureBold(str, fontSize=11){
+  _mCtx.font = `700 ${fontSize}px "IBM Plex Mono", "Courier New", monospace`;
+  return _mCtx.measureText(str).width;
+}
+
+// Compute per-table width: wide enough for header name AND every field row
+function tableWidth(key){
+  const data = SCHEMA[key];
+  // Header needs: left-accent(4) + hdr-side-pad + table-name + right-pad(12)
+  const hdrNeeded = 4 + HDR_SIDE + measureBold(key, 11) + 16;
+
+  // Each row needs: left-margin(8) + badge(28) + name-pad(10) + field-name + gap(14) + type + type-pad(12)
+  let maxRow = 0;
+  data.fields.forEach(f => {
+    const rowNeeded = 8 + BADGE_W + NAME_PAD + measureMono(f.n, 10.5) + 14 + measureMono(f.t, 9) + TYPE_PAD;
+    maxRow = Math.max(maxRow, rowNeeded);
+  });
+
+  // Add 10% safety buffer, snap to nearest 4px, minimum 200px
+  return Math.max(200, Math.ceil(Math.max(hdrNeeded, maxRow) * 1.10 / 4) * 4);
+}
+
+function tableHeight(key){ return HDR_H + SCHEMA[key].fields.length * ROW_H; }
+
+// Column layout: each column = array of table keys
+const COLUMNS = [
+  ['profiles'],
+  ['user_preferences','user_hobbies','hobbies','courses'],
+  ['course_sources','course_knowledge_chunk','course_units','course_sub_units','study_plans','study_plan_items'],
+  ['sub_unit_summaries','sub_unit_flashcards','sub_unit_quizzes','unit_exams','final_exams',
+   'user_course_progress','user_unit_progress','user_subunit_progress'],
+  ['chat_threads','chat_messages','user_feedback','learning_interactions','error_reports']
+];
+
+// Per-column width = widest table in that column
+const colWidths = COLUMNS.map(col => Math.max(...col.map(tableWidth)));
+
+// Compute positions
+const positions = {};
+let totalW = 0, totalH = 0;
+
+let colX = 60;
+COLUMNS.forEach((col, ci) => {
+  const cw = colWidths[ci];
+  let y = 60;
+  col.forEach(k => {
+    const h = tableHeight(k);
+    positions[k] = { x: colX, y, w: cw, h };
+    y += h + PAD;
+    totalH = Math.max(totalH, y + 60);
+  });
+  colX += cw + COL_GAP;
+  totalW = colX;
+});
+
+// Connections (from → to, label)
+const CONNECTIONS = [
+  {from:'profiles',to:'user_preferences',label:'1:1'},
+  {from:'profiles',to:'user_hobbies',label:'1:N'},
+  {from:'profiles',to:'courses',label:'1:N'},
+  {from:'profiles',to:'final_exams',label:'1:N'},
+  {from:'profiles',to:'user_course_progress',label:'1:N'},
+  {from:'profiles',to:'user_unit_progress',label:'1:N'},
+  {from:'profiles',to:'user_subunit_progress',label:'1:N'},
+  {from:'profiles',to:'chat_threads',label:'1:N'},
+  {from:'profiles',to:'user_feedback',label:'1:N'},
+  {from:'profiles',to:'learning_interactions',label:'1:N'},
+  {from:'profiles',to:'error_reports',label:'1:N'},
+  {from:'hobbies',to:'user_hobbies',label:'1:N'},
+  {from:'courses',to:'course_sources',label:'1:N'},
+  {from:'courses',to:'course_knowledge_chunk',label:'1:N'},
+  {from:'courses',to:'course_units',label:'1:N'},
+  {from:'courses',to:'course_sub_units',label:'1:N'},
+  {from:'courses',to:'study_plans',label:'1:1'},
+  {from:'courses',to:'study_plan_items',label:'1:N'},
+  {from:'courses',to:'unit_exams',label:'1:N'},
+  {from:'courses',to:'final_exams',label:'1:N'},
+  {from:'courses',to:'sub_unit_summaries',label:'1:N'},
+  {from:'courses',to:'user_course_progress',label:'1:N'},
+  {from:'courses',to:'user_unit_progress',label:'1:N'},
+  {from:'courses',to:'user_subunit_progress',label:'1:N'},
+  {from:'courses',to:'chat_threads',label:'1:N'},
+  {from:'courses',to:'user_feedback',label:'1:N'},
+  {from:'courses',to:'learning_interactions',label:'1:N'},
+  {from:'courses',to:'error_reports',label:'1:N'},
+  {from:'course_sources',to:'course_knowledge_chunk',label:'1:N'},
+  {from:'course_units',to:'course_sub_units',label:'1:N'},
+  {from:'course_units',to:'unit_exams',label:'1:N'},
+  {from:'course_units',to:'user_unit_progress',label:'1:N'},
+  {from:'course_sub_units',to:'sub_unit_summaries',label:'1:N'},
+  {from:'course_sub_units',to:'sub_unit_flashcards',label:'1:N'},
+  {from:'course_sub_units',to:'sub_unit_quizzes',label:'1:N'},
+  {from:'course_sub_units',to:'user_subunit_progress',label:'1:N'},
+  {from:'chat_threads',to:'chat_messages',label:'1:N'},
+];
+
+// ══════════════════════════════════════════════════════════════════
+// SVG RENDERING
+// ══════════════════════════════════════════════════════════════════
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag,attrs={}){
+  const e=document.createElementNS(NS,tag);
+  for(const[k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  return e;
+}
+function txt(content,attrs={}){
+  const t=document.createElementNS(NS,'text');
+  for(const[k,v] of Object.entries(attrs)) t.setAttribute(k,v);
+  t.textContent=content;
+  return t;
+}
+
+function getGroupColor(key){
+  const g=GROUPS.find(g=>g.tables.includes(key));
+  return g?{color:g.color,dark:g.dark}:{color:'#888',dark:'#222'};
+}
+
+function renderDiagram(){
+  const svg=document.getElementById('erd-svg');
+  svg.innerHTML='';
+
+  // defs — arrow markers + filters
+  const defs=el('defs');
+
+  // Arrow markers for each group color
+  const markerColors=['#4f7ef8','#3ecf8e','#9b6ff7','#f5c842','#fb923c','#f472b6','#666'];
+  markerColors.forEach((mc,i)=>{
+    const marker=el('marker',{id:`arr-${i}`,markerWidth:'8',markerHeight:'8',refX:'6',refY:'3',orient:'auto'});
+    const mp=el('path',{d:'M0,0 L0,6 L8,3 z',fill:mc,opacity:'0.7'});
+    marker.appendChild(mp); defs.appendChild(marker);
+  });
+  // glow filter
+  const filt=el('filter',{id:'glow',x:'-20%',y:'-20%',width:'140%',height:'140%'});
+  const fe1=el('feGaussianBlur',{stdDeviation:'3',result:'blur'});
+  const fe2=el('feComposite',{in:'SourceGraphic',in2:'blur',operator:'over'});
+  filt.appendChild(fe1); filt.appendChild(fe2); defs.appendChild(filt);
+
+  // shadow filter
+  const fShadow=el('filter',{id:'shadow',x:'-5%',y:'-5%',width:'110%',height:'115%'});
+  const feDropShadow=el('feDropShadow',{dx:'0',dy:'3',stdDeviation:'5','flood-color':'rgba(0,0,0,0.5)'});
+  fShadow.appendChild(feDropShadow); defs.appendChild(fShadow);
+
+  svg.appendChild(defs);
+
+  // Background
+  const bg=el('rect',{x:0,y:0,width:totalW,height:totalH,fill:'transparent'});
+  svg.appendChild(bg);
+
+  // ── Draw connections first (behind tables) ──
+  const connLayer=el('g',{id:'connections'});
+
+  CONNECTIONS.forEach(conn=>{
+    const fp=positions[conn.from], tp=positions[conn.to];
+    if(!fp||!tp) return;
+
+    const {color:fromColor}=getGroupColor(conn.from);
+    // find marker index
+    const gIdx=GROUPS.findIndex(g=>g.tables.includes(conn.from));
+    const markerId=`arr-${gIdx>=0?gIdx:6}`;
+
+    // Connection points: right edge of from-table → left edge of to-table
+    // If same column or to is left, use bottom/top
+    const fx = fp.x + fp.w;
+    const fy = fp.y + HDR_H/2;
+    const tx_ = tp.x;
+    const ty_ = tp.y + HDR_H/2;
+
+    const midX = (fx + tx_) / 2;
+
+    const path = el('path',{
+      d: `M${fx},${fy} C${midX},${fy} ${midX},${ty_} ${tx_},${ty_}`,
+      fill:'none',
+      stroke:fromColor,
+      'stroke-width':'1.2',
+      'stroke-opacity':'0.35',
+      'marker-end':`url(#${markerId})`
+    });
+    connLayer.appendChild(path);
+
+    // Label at midpoint
+    const lx=(fx+tx_)/2, ly=(fy+ty_)/2-5;
+    const labelBg=el('rect',{x:lx-12,y:ly-9,width:24,height:13,rx:'3',fill:'#0a0e1a','fill-opacity':'0.85'});
+    const label=el('text',{x:String(lx),y:String(ly),fill:fromColor,'font-size':'8',
+      'font-family':'IBM Plex Mono, Courier New, monospace','text-anchor':'middle',
+      'fill-opacity':'0.8',direction:'ltr'});
+    label.textContent=conn.label;
+    connLayer.appendChild(labelBg);
+    connLayer.appendChild(label);
+  });
+  svg.appendChild(connLayer);
+
+  // ── Draw tables ──
+  const tableLayer=el('g',{id:'tables'});
+
+  Object.entries(positions).forEach(([key,pos])=>{
+    const data=SCHEMA[key];
+    if(!data) return;
+    const {color,dark}=getGroupColor(key);
+    const {x,y,w,h}=pos;
+
+    // ── Add clipPath for this table so nothing bleeds out ──
+    const clipId = `clip-${key.replace(/_/g,'-')}`;
+    const cp = el('clipPath',{id:clipId});
+    // slightly inset so border stroke stays visible
+    cp.appendChild(el('rect',{x:2,y:0,width:w-4,height:h,rx:'6'}));
+    defs.appendChild(cp);
+
+    const g=el('g',{
+      class:'table-group',
+      transform:`translate(${x},${y})`,
+      'data-key':key,
+      // Force LTR on the whole group — critical fix for RTL pages
+      direction:'ltr',
+      style:'direction:ltr'
+    });
+    g.style.cursor='pointer';
+
+    // Drop shadow rect
+    const shadow=el('rect',{x:3,y:4,width:w,height:h,rx:'8',fill:'rgba(0,0,0,0.4)',filter:'blur(6px)'});
+    g.appendChild(shadow);
+
+    // Table body
+    const body=el('rect',{x:0,y:0,width:w,height:h,rx:'8',fill:'#0d1525',stroke:color,'stroke-width':'1','stroke-opacity':'0.5'});
+    g.appendChild(body);
+
+    // ── Everything below is clipped to table bounds ──
+    const clippedG = el('g',{'clip-path':`url(#${clipId})`});
+
+    // Header background
+    clippedG.appendChild(el('rect',{x:0,y:0,width:w,height:HDR_H,rx:'8',fill:dark}));
+    clippedG.appendChild(el('rect',{x:0,y:HDR_H-8,width:w,height:8,fill:dark}));
+
+    // Accent bar
+    clippedG.appendChild(el('rect',{x:0,y:0,width:4,height:HDR_H,fill:color}));
+
+    // Table name — forced LTR, starts right after accent bar
+    const tname = el('text',{
+      x: String(4 + HDR_SIDE),
+      y: String(HDR_H/2 + 4.5),
+      fill: color,
+      'font-size': '11',
+      'font-weight': '700',
+      'font-family': 'IBM Plex Mono, Courier New, monospace',
+      'text-anchor': 'start',
+      direction: 'ltr',
+      'xml:space': 'preserve'
+    });
+    tname.textContent = key;
+    clippedG.appendChild(tname);
+
+    // Divider
+    clippedG.appendChild(el('line',{x1:'0',y1:String(HDR_H),x2:String(w),y2:String(HDR_H),
+      stroke:color,'stroke-width':'0.5','stroke-opacity':'0.3'}));
+
+    // ── Layout constants (all in LTR: left→right) ──
+    const BDG_X   = 8;       // badge left edge
+    const BDG_W   = 26;      // badge width
+    const BDG_MID = BDG_X + BDG_W/2;
+    const NAME_X  = BDG_X + BDG_W + 7;  // field name left anchor
+    const TYPE_X  = w - 9;  // type right anchor (text-anchor:end)
+    const BY      = ROW_H/2 + 4;        // text baseline offset per row
+
+    data.fields.forEach((f,i)=>{
+      const ry = HDR_H + i*ROW_H;
+
+      // Alternating row bg
+      clippedG.appendChild(el('rect',{
+        x:'1',y:String(ry),width:String(w-2),height:String(ROW_H),
+        fill:i%2===0?'rgba(255,255,255,0.025)':'transparent'
+      }));
+
+      // Badge
+      if(f.pk || f.fk){
+        const bc = f.pk?'rgba(245,200,66,':'rgba(155,111,247,';
+        const tc = f.pk?'#f5c842':'#9b6ff7';
+        const label = f.pk?'PK':'FK';
+        clippedG.appendChild(el('rect',{x:String(BDG_X),y:String(ry+6),
+          width:String(BDG_W),height:'12',rx:'3',
+          fill:`${bc}0.15)`,stroke:`${bc}0.4)`,'stroke-width':'0.5'}));
+        const bt = el('text',{x:String(BDG_MID),y:String(ry+14.5),
+          fill:tc,'font-size':'7.5','font-weight':'800',
+          'font-family':'IBM Plex Mono, Courier New, monospace',
+          'text-anchor':'middle',direction:'ltr'});
+        bt.textContent=label;
+        clippedG.appendChild(bt);
+      } else {
+        clippedG.appendChild(el('circle',{cx:String(BDG_MID),cy:String(ry+ROW_H/2),
+          r:'2.5',fill:'rgba(255,255,255,0.12)'}));
+      }
+
+      // Field name — text-anchor:start, direction:ltr
+      const fn_ = el('text',{
+        x: String(NAME_X),
+        y: String(ry + BY),
+        fill: '#c8d0e8',
+        'font-size': '10.5',
+        'font-family': 'IBM Plex Mono, Courier New, monospace',
+        'text-anchor': 'start',
+        direction: 'ltr',
+        'xml:space': 'preserve'
+      });
+      fn_.textContent = f.n;
+      clippedG.appendChild(fn_);
+
+      // Data type — text-anchor:end, right-aligned
+      const ft_ = el('text',{
+        x: String(TYPE_X),
+        y: String(ry + BY),
+        fill: color,
+        'font-size': '9',
+        'font-family': 'IBM Plex Mono, Courier New, monospace',
+        'text-anchor': 'end',
+        'fill-opacity': '0.65',
+        direction: 'ltr',
+        'xml:space': 'preserve'
+      });
+      ft_.textContent = f.t;
+      clippedG.appendChild(ft_);
+
+      // Row separator
+      if(i < data.fields.length-1){
+        clippedG.appendChild(el('line',{
+          x1:String(BDG_X),y1:String(ry+ROW_H),
+          x2:String(w-BDG_X),y2:String(ry+ROW_H),
+          stroke:'rgba(255,255,255,0.04)','stroke-width':'0.5'
+        }));
+      }
+    });
+
+    g.appendChild(clippedG);
+
+    // Hover effect on border
+    g.addEventListener('click',()=>{
+      const grp=GROUPS.find(gr=>gr.tables.includes(key));
+      const col=grp?grp.color:'#4f7ef8';
+      const sbBtn=document.querySelector(`.ebtn[data-k="${key}"]`);
+      if(sbBtn) selectEntity(key,sbBtn,col);
+    });
+    g.addEventListener('mouseenter',()=>{ body.setAttribute('stroke-opacity','0.9'); body.setAttribute('stroke-width','1.5'); });
+    g.addEventListener('mouseleave',()=>{ body.setAttribute('stroke-opacity','0.5'); body.setAttribute('stroke-width','1'); });
+
+    tableLayer.appendChild(g);
+  });
+  svg.appendChild(tableLayer);
+
+  // Set SVG intrinsic size
+  svg.setAttribute('viewBox',`0 0 ${totalW} ${totalH}`);
+  svgNW=totalW; svgNH=totalH;
+  vbX=0; vbY=0; vbW=totalW; vbH=totalH;
+  setTimeout(fitView, 50);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SIDEBAR
+// ══════════════════════════════════════════════════════════════════
+const elList=document.getElementById('el');
+let activeBtn=null;
+GROUPS.forEach(g=>{
+  const ge=document.createElement('div'); ge.className='egroup';
+  const lbl=document.createElement('div'); lbl.className='egroup-lbl'; lbl.textContent=g.label;
+  ge.appendChild(lbl);
+  g.tables.forEach(k=>{
+    const d=SCHEMA[k]; if(!d) return;
+    const btn=document.createElement('button'); btn.className='ebtn'; btn.dataset.k=k;
+    btn.innerHTML=`<span class="edot" style="background:${g.color};box-shadow:0 0 5px ${g.color}55"></span><span style="flex:1">${k}</span><span class="ecnt">${d.fields.length}f</span>`;
+    btn.addEventListener('click',()=>selectEntity(k,btn,g.color));
+    ge.appendChild(btn);
+  });
+  elList.appendChild(ge);
+});
+document.getElementById('si').addEventListener('input',function(){
+  const q=this.value.trim().toLowerCase(); let any=false;
+  elList.querySelectorAll('.egroup').forEach(g=>{
+    let gv=false;
+    g.querySelectorAll('.ebtn').forEach(b=>{
+      const m=!q||b.dataset.k.toLowerCase().includes(q);
+      b.style.display=m?'':'none'; if(m){gv=true;any=true;}
+    });
+    g.querySelector('.egroup-lbl').style.display=gv?'':'none';
+  });
+  document.getElementById('nores').classList.toggle('hidden',any);
+});
+
+function selectEntity(k,btn,color){
+  if(activeBtn) activeBtn.classList.remove('active');
+  btn.classList.add('active'); activeBtn=btn;
+  const d=SCHEMA[k];
+  document.getElementById('ph-name').innerHTML=`
+    <div class="ph-ico" style="background:${color}22;border:1px solid ${color}44">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+    </div>
+    <div><div class="ph-title" style="color:${color}">${d.he}</div><div class="ph-desc">${d.desc}</div></div>`;
+  const fh=d.fields.map(f=>`<div class="frow">${f.pk?'<span class="pk-b">PK</span>':f.fk?'<span class="fk-b">FK</span>':'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>'}<span class="fname">${f.n}</span><span class="ftype">${f.t}</span></div>`).join('');
+  const rh=d.rels.map(r=>`<div class="rtag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>${r}</div>`).join('');
+  document.getElementById('pbody').innerHTML=`
+    <div class="psec anim"><div class="sec-lbl">שדות · ${d.fields.length}</div><div class="flist">${fh}</div></div>
+    <div class="psec anim" style="animation-delay:.04s"><div class="sec-lbl">קשרים · ${d.rels.length}</div><div class="rlist">${rh}</div></div>`;
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel(){
+  document.getElementById('panel').classList.remove('open');
+  if(activeBtn){activeBtn.classList.remove('active');activeBtn=null;}
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PAN & ZOOM — viewBox based
+// ══════════════════════════════════════════════════════════════════
+let vbX=0,vbY=0,vbW=1000,vbH=800,svgNW=1000,svgNH=800;
+const wrap=document.getElementById('erd-wrap');
+const svgEl=document.getElementById('erd-svg');
+let dragging=false,dsx=0,dsy=0,dvbx=0,dvby=0;
+
+function setVB(){
+  svgEl.setAttribute('viewBox',`${vbX} ${vbY} ${vbW} ${vbH}`);
+  document.getElementById('zlbl').textContent=Math.round(svgNW/vbW*100)+'%';
+}
+function zoomAt(px,py,factor){
+  const rect=wrap.getBoundingClientRect();
+  const vpX=vbX+(px/rect.width)*vbW, vpY=vbY+(py/rect.height)*vbH;
+  const nW=Math.max(svgNW*0.05,Math.min(svgNW*8,vbW*factor));
+  const nH=Math.max(svgNH*0.05,Math.min(svgNH*8,vbH*factor));
+  vbX=vpX-(px/rect.width)*nW; vbY=vpY-(py/rect.height)*nH;
+  vbW=nW; vbH=nH; setVB();
+}
+function zi(){ zoomAt(wrap.clientWidth/2,wrap.clientHeight/2,0.77); }
+function zo(){ zoomAt(wrap.clientWidth/2,wrap.clientHeight/2,1.30); }
+function fitView(){
+  const rect=wrap.getBoundingClientRect();
+  if(!rect.width) return;
+  const pad=80;
+  const aspect=rect.width/rect.height;
+  const dAspect=svgNW/svgNH;
+  if(dAspect>aspect){ vbW=svgNW+pad; vbH=vbW/aspect; }
+  else { vbH=svgNH+pad; vbW=vbH*aspect; }
+  vbX=-(vbW-svgNW)/2; vbY=-(vbH-svgNH)/2;
+  setVB();
+}
+function resetView(){ vbX=0;vbY=0;vbW=svgNW;vbH=svgNH;setVB(); }
+
+wrap.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const rect=wrap.getBoundingClientRect();
+  zoomAt(e.clientX-rect.left,e.clientY-rect.top,e.deltaY>0?1.12:0.89);
+},{passive:false});
+wrap.addEventListener('mousedown',e=>{
+  if(e.button!==0)return;
+  dragging=true; dsx=e.clientX; dsy=e.clientY; dvbx=vbX; dvby=vbY;
+  wrap.classList.add('dragging');
+});
+window.addEventListener('mousemove',e=>{
+  if(!dragging)return;
+  const rect=wrap.getBoundingClientRect();
+  vbX=dvbx-(e.clientX-dsx)/rect.width*vbW;
+  vbY=dvby-(e.clientY-dsy)/rect.height*vbH;
+  setVB();
+});
+window.addEventListener('mouseup',()=>{ dragging=false; wrap.classList.remove('dragging'); });
+document.addEventListener('keydown',e=>{
+  if(e.key==='+'||e.key==='=')zi();
+  if(e.key==='-')zo();
+  if(e.key==='0')resetView();
+  if(e.key==='f'||e.key==='F')fitView();
+  if(e.key==='Escape')closePanel();
+});
+new ResizeObserver(()=>{ if(svgNW) setTimeout(fitView,30); }).observe(document.getElementById('main'));
+
+// ── START ──
+renderDiagram();
+</script>
+</body>
+</html>
