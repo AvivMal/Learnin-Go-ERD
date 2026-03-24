@@ -689,6 +689,8 @@ function selectEntity(k,btn,color){
     <div class="psec anim"><div class="sec-lbl">שדות · ${d.fields.length}</div><div class="flist">${fh}</div></div>
     <div class="psec anim" style="animation-delay:.04s"><div class="sec-lbl">קשרים · ${d.rels.length}</div><div class="rlist">${rh}</div></div>`;
   document.getElementById('panel').classList.add('open');
+  // On mobile: close the sidebar drawer so the panel is visible
+  if(window.innerWidth<=768) closeSidebar();
 }
 function closePanel(){
   document.getElementById('panel').classList.remove('open');
@@ -777,12 +779,6 @@ function closeSidebar(){
   document.querySelector('aside').classList.remove('open');
   document.getElementById('sidebar-backdrop').classList.remove('visible');
   document.body.style.overflow='';
-}
-// On mobile, close sidebar after selecting an entity
-const _origSelectEntity = selectEntity;
-function selectEntity(k,btn,color){
-  _origSelectEntity(k,btn,color);
-  if(window.innerWidth<=768) closeSidebar();
 }
 </script>
 </body>
