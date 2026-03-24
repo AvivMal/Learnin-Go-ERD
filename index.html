@@ -21,23 +21,35 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .g1{top:-20%;right:-10%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(79,126,248,.10) 0%,transparent 70%)}
 .g2{bottom:-15%;left:-10%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(155,111,247,.08) 0%,transparent 70%)}
 .g3{top:30%;left:20%;width:35vw;height:35vw;background:radial-gradient(circle,rgba(34,211,238,.05) 0%,transparent 70%)}
+/* ── DESKTOP LAYOUT ── */
 #app{position:relative;z-index:1;display:grid;grid-template-rows:var(--hh) 1fr;grid-template-columns:var(--sw) 1fr;height:100vh}
 header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 20px;
-  border-bottom:1px solid var(--border);background:rgba(7,9,15,.9);backdrop-filter:blur(20px)}
+  border-bottom:1px solid var(--border);background:rgba(7,9,15,.9);backdrop-filter:blur(20px);z-index:30}
 .brand{display:flex;align-items:center;gap:11px}
-.brand-ico{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center}
+.brand-ico{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .brand-name{font-size:.93rem;font-weight:800;letter-spacing:-.02em;background:linear-gradient(90deg,var(--text),var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .brand-tag{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
 .hpills{display:flex;gap:6px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--border);padding:3px 9px;border-radius:20px;font-size:.67rem;color:var(--dim)}
 .pdot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);animation:blink 2s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-aside{border-left:1px solid var(--border);background:rgba(7,9,15,.72);backdrop-filter:blur(20px);display:flex;flex-direction:column;overflow:hidden}
+
+/* mobile menu toggle button — hidden on desktop */
+#menu-toggle{display:none;background:var(--s2);border:1px solid var(--border);border-radius:8px;
+  padding:7px 10px;color:var(--text);cursor:pointer;gap:6px;align-items:center;font-family:'Heebo',sans-serif;
+  font-size:.78rem;font-weight:600}
+#menu-toggle svg{flex-shrink:0}
+
+/* ── SIDEBAR ── */
+aside{border-left:1px solid var(--border);background:rgba(7,9,15,.72);backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;overflow:hidden;transition:transform .3s cubic-bezier(.4,0,.2,1)}
 .s-top{padding:14px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
 .s-lbl{font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px}
 .sw{position:relative}
 .sw svg{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
-#si{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:7px 32px 7px 10px;font-family:'Heebo',sans-serif;font-size:.78rem;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl}
+#si{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:7px 32px 7px 10px;
+  font-family:'Heebo',sans-serif;font-size:.78rem;color:var(--text);outline:none;
+  transition:border-color .2s,box-shadow .2s;direction:rtl}
 #si::placeholder{color:var(--muted)}
 #si:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-g)}
 #el-wrap{flex:1;overflow-y:auto;padding:6px}
@@ -45,22 +57,89 @@ aside{border-left:1px solid var(--border);background:rgba(7,9,15,.72);backdrop-f
 #el-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .egroup{margin-bottom:2px}
 .egroup-lbl{font-size:.57rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 8px 3px}
-.ebtn{width:100%;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--dim);font-family:'Heebo',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;text-align:right;transition:all .12s;direction:rtl}
+.ebtn{width:100%;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;border:1px solid transparent;
+  background:transparent;color:var(--dim);font-family:'Heebo',sans-serif;font-size:.75rem;font-weight:500;
+  cursor:pointer;text-align:right;transition:all .12s;direction:rtl}
 .ebtn:hover{background:var(--s2);border-color:var(--border);color:var(--text)}
 .ebtn.active{background:var(--accent-g);border-color:rgba(79,126,248,.35);color:#b0c6ff}
 .edot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.ecnt{margin-right:auto;font-size:.58rem;color:var(--muted);background:var(--s1);border:1px solid var(--border);padding:1px 5px;border-radius:8px;font-family:'IBM Plex Mono',monospace}
+.ecnt{margin-right:auto;font-size:.58rem;color:var(--muted);background:var(--s1);border:1px solid var(--border);
+  padding:1px 5px;border-radius:8px;font-family:'IBM Plex Mono',monospace}
 .no-res{padding:20px;text-align:center;color:var(--muted);font-size:.75rem}
 .hidden{display:none!important}
+
+/* ── MAIN AREA ── */
 #main{display:flex;flex-direction:column;overflow:hidden;position:relative}
-#toolbar{position:absolute;top:14px;left:14px;z-index:20;display:flex;gap:3px;background:rgba(7,9,15,.92);backdrop-filter:blur(14px);border:1px solid var(--border2);border-radius:8px;padding:3px}
-.tbtn{background:transparent;border:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;color:var(--dim);cursor:pointer;transition:all .12s}
+
+/* ── TOOLBAR ── */
+#toolbar{position:absolute;top:14px;left:14px;z-index:20;display:flex;gap:3px;
+  background:rgba(7,9,15,.92);backdrop-filter:blur(14px);border:1px solid var(--border2);
+  border-radius:8px;padding:3px}
+.tbtn{background:transparent;border:none;width:28px;height:28px;display:flex;align-items:center;
+  justify-content:center;border-radius:5px;color:var(--dim);cursor:pointer;transition:all .12s}
 .tbtn:hover{background:var(--s3);color:var(--text)}
 .tsep{width:1px;background:var(--border);margin:4px 1px}
-#zlbl{position:absolute;top:14px;left:136px;z-index:20;background:rgba(7,9,15,.92);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.67rem;font-family:'IBM Plex Mono',monospace;color:var(--dim);min-width:52px;text-align:center}
+#zlbl{position:absolute;top:14px;left:136px;z-index:20;background:rgba(7,9,15,.92);backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.67rem;
+  font-family:'IBM Plex Mono',monospace;color:var(--dim);min-width:52px;text-align:center}
+
+/* mobile zoom FAB — hidden on desktop */
+#mob-zoom{display:none;position:absolute;bottom:24px;right:20px;z-index:25;
+  flex-direction:column;gap:8px}
+.mzb{width:46px;height:46px;border-radius:50%;border:1px solid var(--border2);
+  background:rgba(7,9,15,.95);backdrop-filter:blur(14px);color:var(--text);
+  font-size:1.3rem;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:background .15s,transform .1s;
+  -webkit-tap-highlight-color:transparent}
+.mzb:active{background:var(--s3);transform:scale(.93)}
+
 #erd-wrap{flex:1;overflow:hidden;position:relative;cursor:grab}
 #erd-wrap.dragging{cursor:grabbing}
 #erd-svg{width:100%;height:100%;display:block;shape-rendering:geometricPrecision;text-rendering:optimizeLegibility}
+
+/* ── MOBILE OVERLAY backdrop ── */
+#sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
+  backdrop-filter:blur(3px);z-index:40}
+
+/* ── MOBILE BREAKPOINT ── */
+@media(max-width:768px){
+  :root{--hh:52px}
+
+  /* collapse sidebar out of grid, float it as overlay */
+  #app{grid-template-columns:1fr;grid-template-rows:var(--hh) 1fr}
+
+  aside{
+    position:fixed;
+    top:0;right:0;          /* slides in from right (RTL) */
+    width:min(320px,90vw);
+    height:100vh;
+    z-index:50;
+    border-left:1px solid var(--border2);
+    transform:translateX(100%);  /* hidden off-screen to the right */
+    box-shadow:-8px 0 40px rgba(0,0,0,.6);
+  }
+  aside.open{transform:translateX(0)}
+
+  #sidebar-backdrop.visible{display:block}
+
+  /* show mobile toggle */
+  #menu-toggle{display:flex}
+
+  /* hide desktop hint pill */
+  .pill-hint{display:none}
+
+  /* toolbar: smaller, repositioned */
+  #toolbar{top:10px;left:10px}
+  #zlbl{top:10px;left:120px}
+
+  /* show mobile zoom FAB */
+  #mob-zoom{display:flex}
+
+  /* panel full-width */
+  #panel.open{height:min(380px,50vh)}
+  .pbody{grid-template-columns:1fr;height:auto;overflow-y:auto;max-height:calc(min(380px,50vh) - 46px)}
+  .psec:first-child{border-left:none;border-bottom:1px solid var(--border)}
+}
 /* SVG table styles */
 .tbl-header{cursor:pointer;transition:filter .15s}
 .tbl-header:hover{filter:brightness(1.2)}
@@ -108,6 +187,11 @@ aside{border-left:1px solid var(--border);background:rgba(7,9,15,.72);backdrop-f
     <div class="pill"><div class="pdot"></div>SVG ERD</div>
     <div class="pill">26 טבלאות</div>
     <div class="pill">35 קשרים</div>
+    <div class="pill pill-hint" style="font-size:.6rem;color:var(--muted)">Scroll לזום · גרור להזזה · F = fit</div>
+    <button id="menu-toggle" onclick="toggleSidebar()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      ישויות
+    </button>
   </div>
 </header>
 <aside>
@@ -127,12 +211,19 @@ aside{border-left:1px solid var(--border);background:rgba(7,9,15,.72);backdrop-f
     <button class="tbtn" onclick="resetView()" title="0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
   </div>
   <div id="zlbl">100%</div>
+  <!-- Mobile zoom FAB -->
+  <div id="mob-zoom">
+    <button class="mzb" onclick="zi()" aria-label="זום אין">＋</button>
+    <button class="mzb" onclick="fitView()" aria-label="fit" style="font-size:.9rem">⛶</button>
+    <button class="mzb" onclick="zo()" aria-label="זום אאוט">－</button>
+  </div>
   <div id="erd-wrap" style="direction:ltr"><svg id="erd-svg" xmlns="http://www.w3.org/2000/svg" style="direction:ltr;unicode-bidi:isolate" direction="ltr"></svg></div>
   <div id="panel">
     <div class="ph"><div class="ph-name" id="ph-name"></div><button class="cbtn" onclick="closePanel()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="pbody" id="pbody"></div>
-  </div>
-</div>
+  </div><!-- /app -->
+<!-- Mobile sidebar backdrop -->
+<div id="sidebar-backdrop" onclick="closeSidebar()"></div>
 </div>
 
 <script>
@@ -668,6 +759,31 @@ new ResizeObserver(()=>{ if(svgNW) setTimeout(fitView,30); }).observe(document.g
 
 // ── START ──
 renderDiagram();
+
+// ══════════════════════════════════════════════════════════════════
+// MOBILE SIDEBAR
+// ══════════════════════════════════════════════════════════════════
+function toggleSidebar(){
+  const aside=document.querySelector('aside');
+  if(aside.classList.contains('open')) closeSidebar();
+  else openSidebar();
+}
+function openSidebar(){
+  document.querySelector('aside').classList.add('open');
+  document.getElementById('sidebar-backdrop').classList.add('visible');
+  document.body.style.overflow='hidden';
+}
+function closeSidebar(){
+  document.querySelector('aside').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('visible');
+  document.body.style.overflow='';
+}
+// On mobile, close sidebar after selecting an entity
+const _origSelectEntity = selectEntity;
+function selectEntity(k,btn,color){
+  _origSelectEntity(k,btn,color);
+  if(window.innerWidth<=768) closeSidebar();
+}
 </script>
 </body>
 </html>
